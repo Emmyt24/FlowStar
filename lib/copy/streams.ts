@@ -86,3 +86,49 @@ export const streamsCopy = {
     clearFilters: 'Clear filters',
   },
 }
+
+// Copy for the StreamCard component (components/streams/stream-card.tsx).
+export const streamCardCopy = {
+  direction: {
+    sending: 'Sending',
+    receiving: 'Receiving',
+    sendingTo: 'Sending to',
+    receivingFrom: 'Receiving from',
+  },
+  ariaLabel: (direction: string, amount: string, symbol: string, status: string, pct: string) =>
+    `${direction} ${amount} ${symbol}, ${status}, ${pct}% unlocked`,
+  toasts: {
+    unpinned: 'Stream unpinned',
+    pinned: 'Stream pinned to top',
+    unhidden: 'Stream unhidden',
+    hidden: 'Stream hidden',
+    hiddenDescription: 'Use "Show hidden streams" on the streams page to bring it back.',
+    senderUnblocked: 'Sender unblocked',
+    senderBlocked: 'Sender blocked',
+    senderBlockedDescription: 'Future streams from this address will be hidden automatically.',
+    linkCopied: 'Link copied to clipboard',
+  },
+  pinnedToTop: 'Pinned to top',
+  selectStream: (id: string) => `Select stream ${id}`,
+  copyLink: 'Copy stream link',
+  options: 'Stream options',
+  menu: {
+    unpin: 'Unpin stream',
+    pin: 'Pin to top',
+    unhide: 'Unhide stream',
+    hide: 'Hide stream',
+    unblock: 'Unblock sender',
+    block: 'Block sender',
+  },
+  progressLabel: 'Stream unlock progress',
+  cancelling: 'Cancelling…',
+  total: 'Total',
+  loadingPrice: 'Loading price',
+  timing: {
+    startsIn: 'Starts in',
+    ended: 'Ended',
+    endsIn: 'Ends in',
+  },
+  unlocked: (pct: string) => `${pct}% unlocked`,
+  withdrawn: 'withdrawn',
+}
