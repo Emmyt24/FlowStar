@@ -364,9 +364,8 @@ export function CreateForm() {
     // Issue #676: surface draft-save failures instead of silently
     // discarding them.
     () =>
-      toast.warning("Your draft isn't being saved", {
-        description:
-          "Storage is full or unavailable — your progress won't be restored if you leave this page.",
+      toast.warning(copy.toasts.draftSaveWarningTitle, {
+        description: copy.toasts.draftSaveWarningDescription,
       }),
   )
 
@@ -417,7 +416,7 @@ export function CreateForm() {
   function handleRemoveAddressBookEntry(id: string) {
     deleteAddressBookEntry(id)
     setAddressBookEntries(getAddressBookEntries())
-    toast.success('Recipient removed')
+    toast.success(copy.toasts.recipientRemoved)
   }
 
   function openRenameDialog(entry: { id: string; label: string }) {
@@ -432,7 +431,7 @@ export function CreateForm() {
     updateAddressBookEntry(renamingEntry.id, { label: trimmed })
     setAddressBookEntries(getAddressBookEntries())
     setRenamingEntry(null)
-    toast.success('Recipient renamed')
+    toast.success(copy.toasts.recipientRenamed)
   }
 
   function validate(): boolean {
@@ -847,7 +846,9 @@ export function CreateForm() {
                   has entered an amount, separately from the "here's the
                   USD value" case below. */}
               {priceLoading && tokenAmountNum > 0 && !usdInputMode && (
-                <p className="text-xs text-muted-foreground opacity-60">Fetching price…</p>
+                <p className="text-xs text-muted-foreground opacity-60">
+                  {copy.amountSection.fetchingPrice}
+                </p>
               )}
               {usdEquivalent && !usdInputMode && (
                 <p className="text-xs text-muted-foreground">
@@ -878,7 +879,7 @@ export function CreateForm() {
                   cached fallback). */}
               {!priceLoading && !supportsUsd && tokenAmountNum > 0 && !usdInputMode && (
                 <p className="text-xs text-muted-foreground">
-                  Price unavailable for {selectedToken.symbol}
+                  {copy.amountSection.priceUnavailable(selectedToken.symbol)}
                   {priceLoading && (
                     <span className="ml-1 opacity-60">{copy.amountSection.fetchingPrice}</span>
                   )}
@@ -993,7 +994,7 @@ export function CreateForm() {
                         <button
                           type="button"
                           onClick={() => openRenameDialog(entry)}
-                          aria-label={`Rename ${entry.label}`}
+                          aria-label={copy.recipientSection.renameEntryAria(entry.label)}
                           className="rounded-full p-1 opacity-60 hover:bg-secondary hover:opacity-100"
                         >
                           <Pencil className="size-3" />
@@ -1001,7 +1002,7 @@ export function CreateForm() {
                         <button
                           type="button"
                           onClick={() => handleRemoveAddressBookEntry(entry.id)}
-                          aria-label={`Remove ${entry.label}`}
+                          aria-label={copy.recipientSection.removeEntryAria(entry.label)}
                           className="rounded-full p-1 opacity-60 hover:bg-destructive/10 hover:text-destructive hover:opacity-100"
                         >
                           <X className="size-3" />
@@ -1232,7 +1233,7 @@ export function CreateForm() {
                       type="number"
                       min="0"
                       step="any"
-                      placeholder="0"
+                      placeholder={copy.scheduleSection.cliffAmountPlaceholder}
                       value={form.cliffAmount}
                       onChange={(e) => set('cliffAmount', e.target.value)}
                       aria-invalid={!!errors.cliffAmount}
@@ -1345,10 +1346,10 @@ export function CreateForm() {
       <Dialog open={!!renamingEntry} onOpenChange={(open) => !open && setRenamingEntry(null)}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Rename recipient</DialogTitle>
+            <DialogTitle>{copy.renameDialog.title}</DialogTitle>
           </DialogHeader>
           <div className="space-y-1.5">
-            <Label htmlFor="renameRecipient">Label</Label>
+            <Label htmlFor="renameRecipient">{copy.renameDialog.label}</Label>
             <Input
               id="renameRecipient"
               value={renameValue}
@@ -1361,10 +1362,10 @@ export function CreateForm() {
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setRenamingEntry(null)}>
-              Cancel
+              {copy.renameDialog.cancel}
             </Button>
             <Button onClick={handleConfirmRename} disabled={!renameValue.trim()}>
-              Save
+              {copy.renameDialog.save}
             </Button>
           </DialogFooter>
         </DialogContent>
