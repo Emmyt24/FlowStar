@@ -269,7 +269,7 @@ function WithdrawDialog({
         onConfirm={handleWithdraw}
         onCancel={() => setShowFeeEstimate(false)}
         fees={feeBreakdown}
-        action="withdrawal"
+        action={copy.withdrawDialog.feeConfirmAction}
         averageFee={TYPICAL_FEES.withdraw.typical}
         isHighFee={withdrawFeeHigh}
         loading={pending}
@@ -341,7 +341,7 @@ function CancelDialog({
         onConfirm={handleCancel}
         onCancel={() => setShowFeeEstimate(false)}
         fees={feeBreakdown}
-        action="stream cancellation"
+        action={copy.cancelDialog.feeConfirmAction}
         averageFee={TYPICAL_FEES.cancel.typical}
         isHighFee={cancelFeeHigh}
         loading={false}
@@ -381,19 +381,16 @@ function CleanupDialog({
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle>Remove from history</DialogTitle>
-          <DialogDescription>
-            This permanently deletes this stream&apos;s on-chain record. This can&apos;t be undone,
-            and it won&apos;t affect any funds already transferred.
-          </DialogDescription>
+          <DialogTitle>{copy.cleanupDialog.title}</DialogTitle>
+          <DialogDescription>{copy.cleanupDialog.description}</DialogDescription>
         </DialogHeader>
         {error && <p className="text-xs text-destructive">{error}</p>}
         <div className="flex justify-end gap-2 pt-2">
           <Button variant="ghost" onClick={onClose} disabled={pending}>
-            Cancel
+            {copy.cleanupDialog.cancelButton}
           </Button>
           <Button variant="destructive" onClick={handleConfirm} disabled={pending}>
-            {pending ? 'Removing…' : 'Remove permanently'}
+            {pending ? copy.cleanupDialog.removing : copy.cleanupDialog.confirmButton}
           </Button>
         </div>
       </DialogContent>
@@ -824,30 +821,30 @@ function ShareButtons({
         <DropdownMenuTrigger asChild>
           <button
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-            aria-label="Share stream"
+            aria-label={copy.shareButtons.shareAriaLabel}
           >
             <Share2 className="size-4" />
-            Share
+            {copy.shareButtons.shareButton}
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-44">
           <DropdownMenuItem onClick={copyLink}>
             <LinkIcon className="size-4 mr-2" />
-            <span>Copy link</span>
+            <span>{copy.shareButtons.copyLinkButton}</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={shareToTwitter}>
             <svg className="size-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
               <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 7-7 7-7" />
             </svg>
-            <span>Twitter</span>
+            <span>{copy.shareButtons.twitterButton}</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={shareToTelegram}>
             <MessageCircle className="size-4 mr-2" />
-            <span>Telegram</span>
+            <span>{copy.shareButtons.telegramButton}</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowQr(true)}>
             <QrCode className="size-4 mr-2" />
-            <span>QR code</span>
+            <span>{copy.shareButtons.qrButton}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -1017,7 +1014,7 @@ function StreamDetail({ id }: { id: string }) {
         <div>
           <ProgressBar
             value={progress}
-            label="Stream unlock progress"
+            label={copy.header.unlockProgressLabel}
             marker={withdrawnFrac}
             indeterminateShimmer={status === 'streaming'}
           />
@@ -1105,7 +1102,7 @@ function StreamDetail({ id }: { id: string }) {
                 className="gap-1.5 text-destructive hover:text-destructive"
               >
                 <Trash2 className="size-4" />
-                Remove from history
+                {copy.header.removeFromHistoryButton}
               </Button>
             )}
           </div>
