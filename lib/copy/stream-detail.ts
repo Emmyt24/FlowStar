@@ -146,6 +146,18 @@ export const streamDetailCopy = {
     end: "End",
     network: "Network",
   },
+
+  // StreamTimeline strings — issue #952
+  timeline: {
+    sectionTitle: "Transaction history",
+    refreshAriaLabel: "Refresh timeline",
+    loading: "Loading history…",
+    emptyTitle: "No transaction history found for this stream.",
+    emptyBody: "History is populated from on-chain events after the stream is active.",
+    amountLabel: (amount: string) => `Amount: ${amount}`,
+    showMoreButton: (count: number) => `Show ${count} more events`,
+    collapseButton: "Collapse",
+  },
 };
 
 // QrShareDialog strings — issue #954
