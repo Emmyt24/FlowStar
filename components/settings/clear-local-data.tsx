@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { AlertTriangle } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
+import { settingsCopy } from '@/lib/copy/settings'
 
 /**
  * Every piece of FlowStar's localStorage-backed state uses a key prefixed
@@ -27,8 +28,8 @@ export function ClearLocalData() {
   function handleClear() {
     const count = clearFlowStarLocalStorage()
     setConfirming(false)
-    toast.success(`Cleared ${count} item${count === 1 ? '' : 's'} of local data`, {
-      description: 'Reloading…',
+    toast.success(settingsCopy.clearLocalData.toast.cleared(count), {
+      description: settingsCopy.clearLocalData.toast.reloading,
     })
     setTimeout(() => window.location.reload(), 800)
   }
@@ -38,29 +39,27 @@ export function ClearLocalData() {
       <div className="flex items-start gap-2">
         <AlertTriangle className="size-4 text-destructive shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-medium">Clear local data</p>
+          <p className="text-sm font-medium">{settingsCopy.clearLocalData.title}</p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Resets hidden streams, blocked senders, your address book, webhooks and their
-            delivery history, notifications and preferences, auto-withdraw settings, form
-            drafts, and display preferences on this device. This does not affect anything
-            on-chain — your streams themselves are unaffected. Your wallet connection is not
-            cleared.
+            {settingsCopy.clearLocalData.description}
           </p>
         </div>
       </div>
       {confirming ? (
         <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground">Are you sure? This can't be undone.</span>
+          <span className="text-xs text-muted-foreground">
+            {settingsCopy.clearLocalData.confirmPrompt}
+          </span>
           <Button variant="destructive" size="sm" onClick={handleClear}>
-            Confirm clear
+            {settingsCopy.clearLocalData.confirm}
           </Button>
           <Button variant="ghost" size="sm" onClick={() => setConfirming(false)}>
-            Cancel
+            {settingsCopy.clearLocalData.cancel}
           </Button>
         </div>
       ) : (
         <Button variant="outline" size="sm" onClick={() => setConfirming(true)}>
-          Clear local data
+          {settingsCopy.clearLocalData.button}
         </Button>
       )}
     </div>

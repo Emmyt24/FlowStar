@@ -51,6 +51,17 @@ export const settingsCopy = {
     toasts: {
       entryUpdated: 'Entry updated',
       entryRemoved: 'Entry removed',
+  clearLocalData: {
+    title: 'Clear local data',
+    description:
+      'Resets hidden streams, blocked senders, your address book, webhooks and their delivery history, notifications and preferences, auto-withdraw settings, form drafts, and display preferences on this device. This does not affect anything on-chain — your streams themselves are unaffected. Your wallet connection is not cleared.',
+    confirmPrompt: "Are you sure? This can't be undone.",
+    confirm: 'Confirm clear',
+    cancel: 'Cancel',
+    button: 'Clear local data',
+    toast: {
+      cleared: (count: number) => `Cleared ${count} item${count === 1 ? '' : 's'} of local data`,
+      reloading: 'Reloading…',
     },
   },
 

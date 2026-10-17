@@ -29,6 +29,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { getFederationNameForAddress } from '@/lib/address-book'
+import { streamCardCopy as copy } from '@/lib/copy/streams'
 import type { StreamData } from '@/types/stream'
 
 // Pick update interval based on a quick pre-check of stream state.
@@ -82,9 +83,9 @@ function StreamCardInner({
   // Issue #155: show a known Federation name (e.g. alice*domain.com) for the
   // counterparty address when one was resolved earlier in the address book.
   const counterpartyFederationName = getFederationNameForAddress(counterparty)
-  const direction = isOutgoing ? 'Sending' : 'Receiving'
+  const direction = isOutgoing ? copy.direction.sending : copy.direction.receiving
   const displayAmount = formatTokenAmount(stream.depositedAmount, stream.token.decimals, 2)
-  const ariaLabel = `${direction} ${displayAmount} ${stream.token.symbol}, ${status}, ${(progress * 100).toFixed(0)}% unlocked`
+  const ariaLabel = copy.ariaLabel(direction, displayAmount, stream.token.symbol, status, (progress * 100).toFixed(0))
 
   const usdValue =
     showUsd && usdPrice !== null
@@ -103,10 +104,10 @@ function StreamCardInner({
     e.preventDefault()
     if (pinned) {
       unpinStream(stream.id)
-      toast.success('Stream unpinned')
+      toast.success(copy.toasts.unpinned)
     } else {
       pinStream(stream.id)
-      toast.success('Stream pinned to top')
+      toast.success(copy.toasts.pinned)
     }
   }
 
@@ -114,11 +115,11 @@ function StreamCardInner({
     e.preventDefault()
     if (isHiddenView) {
       unhideStream(stream.id)
-      toast.success('Stream unhidden')
+      toast.success(copy.toasts.unhidden)
     } else {
       hideStream(stream.id)
-      toast.success('Stream hidden', {
-        description: 'Use "Show hidden streams" on the streams page to bring it back.',
+      toast.success(copy.toasts.hidden, {
+        description: copy.toasts.hiddenDescription,
       })
     }
   }
@@ -127,12 +128,12 @@ function StreamCardInner({
     e.preventDefault()
     if (isBlocked(stream.sender)) {
       unblockSender(stream.sender)
-      toast.success('Sender unblocked')
+      toast.success(copy.toasts.senderUnblocked)
     } else {
       blockSender(stream.sender)
       hideStream(stream.id)
-      toast.success('Sender blocked', {
-        description: 'Future streams from this address will be hidden automatically.',
+      toast.success(copy.toasts.senderBlocked, {
+        description: copy.toasts.senderBlockedDescription,
       })
     }
   }
@@ -149,7 +150,7 @@ function StreamCardInner({
     navigator.clipboard.writeText(url)
     setCopiedLink(true)
     setTimeout(() => setCopiedLink(false), 1500)
-    toast.success('Link copied to clipboard')
+    toast.success(copy.toasts.linkCopied)
   }
 
   return (
@@ -167,8 +168,8 @@ function StreamCardInner({
       {pinned && !compact && (
         <span
           className="absolute left-3 top-3 z-10 flex size-5 items-center justify-center rounded-full bg-primary/10 text-primary"
-          aria-label="Pinned to top"
-          title="Pinned to top"
+          aria-label={copy.pinnedToTop}
+          title={copy.pinnedToTop}
         >
           <Pin className="size-3" />
         </span>
@@ -183,7 +184,7 @@ function StreamCardInner({
             e.stopPropagation()
             onToggleSelect?.(stream.id)
           }}
-          aria-label={`Select stream ${stream.id}`}
+          aria-label={copy.selectStream(stream.id)}
           data-testid={`stream-card-select-${stream.id}`}
           className="absolute right-4 top-1/2 z-10 size-4 -translate-y-1/2 accent-primary"
         />
@@ -202,7 +203,7 @@ function StreamCardInner({
         >
           <button
             type="button"
-            aria-label="Copy stream link"
+            aria-label={copy.copyLink}
             data-testid={`stream-card-copy-link-${stream.id}`}
             onClick={handleCopyLink}
             className="flex size-7 items-center justify-center rounded-full text-muted-foreground opacity-0 transition-opacity hover:bg-secondary hover:text-foreground group-hover:opacity-100 focus-visible:opacity-100"
@@ -227,7 +228,7 @@ function StreamCardInner({
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                aria-label="Stream options"
+                aria-label={copy.options}
                 data-testid={`stream-card-menu-${stream.id}`}
                 className="flex size-7 items-center justify-center rounded-full text-muted-foreground opacity-0 transition-opacity hover:bg-secondary hover:text-foreground group-hover:opacity-100 focus-visible:opacity-100"
               >
@@ -239,12 +240,12 @@ function StreamCardInner({
                 {pinned ? (
                   <>
                     <PinOff className="size-4 mr-2" />
-                    Unpin stream
+                    {copy.menu.unpin}
                   </>
                 ) : (
                   <>
                     <Pin className="size-4 mr-2" />
-                    Pin to top
+                    {copy.menu.pin}
                   </>
                 )}
               </DropdownMenuItem>
@@ -254,12 +255,12 @@ function StreamCardInner({
                     {isHiddenView ? (
                       <>
                         <Eye className="size-4 mr-2" />
-                        Unhide stream
+                        {copy.menu.unhide}
                       </>
                     ) : (
                       <>
                         <EyeOff className="size-4 mr-2" />
-                        Hide stream
+                        {copy.menu.hide}
                       </>
                     )}
                   </DropdownMenuItem>
@@ -267,12 +268,12 @@ function StreamCardInner({
                     {isBlocked(stream.sender) ? (
                       <>
                         <UserCheck className="size-4 mr-2" />
-                        Unblock sender
+                        {copy.menu.unblock}
                       </>
                     ) : (
                       <>
                         <UserX className="size-4 mr-2" />
-                        Block sender
+                        {copy.menu.block}
                       </>
                     )}
                   </DropdownMenuItem>
@@ -320,7 +321,7 @@ function StreamCardInner({
           <div className="min-w-0 flex-1">
             <ProgressBar
               value={progress}
-              label="Stream unlock progress"
+              label={copy.progressLabel}
               marker={withdrawnFrac}
               indeterminateShimmer={status === 'streaming'}
             />
@@ -335,7 +336,7 @@ function StreamCardInner({
           {isCancelling ? (
             <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-destructive/15 px-2 py-0.5 text-xs font-medium text-destructive">
               <span className="size-1.5 animate-pulse rounded-full bg-current" />
-              Cancelling…
+              {copy.cancelling}
             </span>
           ) : (
             <StreamStatusBadge status={status} />
@@ -360,7 +361,7 @@ function StreamCardInner({
               </span>
               <div>
                 <p className="text-sm font-medium">
-                  {stream.metadata?.name ?? (isOutgoing ? 'Sending to' : 'Receiving from')}
+                  {stream.metadata?.name ?? (isOutgoing ? copy.direction.sendingTo : copy.direction.receivingFrom)}
                 </p>
                 <p
                   className="font-mono text-xs text-muted-foreground"
@@ -373,7 +374,7 @@ function StreamCardInner({
             {isCancelling ? (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-destructive/15 px-2.5 py-1 text-xs font-medium text-destructive">
                 <span className="size-1.5 animate-pulse rounded-full bg-current" />
-                Cancelling…
+                {copy.cancelling}
               </span>
             ) : (
               <StreamStatusBadge status={status} />
@@ -382,7 +383,7 @@ function StreamCardInner({
 
           <div className="mt-5 flex items-end justify-between">
             <div>
-              <p className="text-xs text-muted-foreground">Total</p>
+              <p className="text-xs text-muted-foreground">{copy.total}</p>
               <TokenAmount
                 amount={stream.depositedAmount}
                 token={stream.token}
@@ -393,7 +394,7 @@ function StreamCardInner({
                   identically (nothing) — show a distinct skeleton while the
                   price is still being fetched. */}
               {showUsd && usdValue === null && priceLoading ? (
-                <div className="mt-0.5 h-3 w-12 animate-pulse rounded bg-muted" aria-label="Loading price" />
+                <div className="mt-0.5 h-3 w-12 animate-pulse rounded bg-muted" aria-label={copy.loadingPrice} />
               ) : (
                 usdValue !== null && (
                   <p className="text-xs text-muted-foreground">{formatUsd(usdValue)}</p>
@@ -403,10 +404,10 @@ function StreamCardInner({
             <div className="text-right">
               <p className="text-xs text-muted-foreground">
                 {status === 'scheduled'
-                  ? 'Starts in'
+                  ? copy.timing.startsIn
                   : status === 'completed' || status === 'cancelled'
-                    ? 'Ended'
-                    : 'Ends in'}
+                    ? copy.timing.ended
+                    : copy.timing.endsIn}
               </p>
               <div className="text-sm font-medium">
                 {status === 'scheduled' ? (
@@ -427,12 +428,12 @@ function StreamCardInner({
           <div className="mt-4">
             <ProgressBar
               value={progress}
-              label="Stream unlock progress"
+              label={copy.progressLabel}
               marker={withdrawnFrac}
               indeterminateShimmer={status === 'streaming'}
             />
             <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-              <span>{(progress * 100).toFixed(1)}% unlocked</span>
+              <span>{copy.unlocked((progress * 100).toFixed(1))}</span>
               <span>
                 <TokenAmount
                   amount={stream.withdrawnAmount}
@@ -440,7 +441,7 @@ function StreamCardInner({
                   showSymbol={false}
                   maxFractionDigits={2}
                 />{' '}
-                withdrawn
+                {copy.withdrawn}
               </span>
             </div>
           </div>

@@ -40,6 +40,7 @@ export const createFormCopy = {
       `Streaming rate: ${ratePerSec} ${symbol}/sec (≈ $${usdPerSec}/sec)`,
     fetchingPrice: 'Fetching price…',
     tokenEquivalentInUsdMode: (amount: string, symbol: string) => `≈ ${amount} ${symbol}`,
+    priceUnavailable: (symbol: string) => `Price unavailable for ${symbol}`,
   },
 
   recipientSection: {
@@ -51,6 +52,8 @@ export const createFormCopy = {
     savedDefaultLabel: 'Saved recipient',
     savedToast: 'Recipient saved',
     recentRecipientsLabel: 'Recent recipients',
+    renameEntryAria: (label: string) => `Rename ${label}`,
+    removeEntryAria: (label: string) => `Remove ${label}`,
     selfStreamWarning:
       'This is your own address. Self-streams are allowed but may have been unintended.',
     unfundedTitle: 'This address has no transaction history.',
@@ -111,6 +114,10 @@ export const createFormCopy = {
     },
   },
 
+    cliffAmountPlaceholder: '0',
+    optionalTag: 'optional',
+  },
+
   txPreviewOperationLabel: 'Create Stream',
 
   mainnetWarning:
@@ -128,6 +135,18 @@ export const createFormCopy = {
   toasts: {
     streamCreatedTitle: 'Stream created',
     streamCreatedDescription: (id: string) => `Stream #${id} is live.`,
+    draftSaveWarningTitle: "Your draft isn't being saved",
+    draftSaveWarningDescription:
+      "Storage is full or unavailable — your progress won't be restored if you leave this page.",
+    recipientRemoved: 'Recipient removed',
+    recipientRenamed: 'Recipient renamed',
+  },
+
+  renameDialog: {
+    title: 'Rename recipient',
+    label: 'Label',
+    cancel: 'Cancel',
+    save: 'Save',
   },
 
   errors: {
