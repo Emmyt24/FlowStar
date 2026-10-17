@@ -12,9 +12,14 @@ import {
   ChevronUp,
   Clock,
 } from 'lucide-react'
-import { useStreamHistory, type TimelineEvent, type TimelineEventType } from '@/hooks/use-stream-history'
+import {
+  useStreamHistory,
+  type TimelineEvent,
+  type TimelineEventType,
+} from '@/hooks/use-stream-history'
 import { explorerUrl, type NetworkName } from '@/lib/stellar'
 import { useNetwork } from '@/components/providers/network-provider'
+import { streamTimelineCopy } from '@/lib/copy/stream-detail'
 
 function eventIcon(type: TimelineEventType) {
   switch (type) {
@@ -72,7 +77,9 @@ function TimelineItem({ event, isLast, network }: TimelineItemProps) {
     <div className="flex gap-3">
       {/* Icon + line */}
       <div className="flex flex-col items-center">
-        <div className={`flex size-8 shrink-0 items-center justify-center rounded-full border ${eventColor(event.type)}`}>
+        <div
+          className={`flex size-8 shrink-0 items-center justify-center rounded-full border ${eventColor(event.type)}`}
+        >
           {eventIcon(event.type)}
         </div>
         {!isLast && <div className="mt-1 w-px flex-1 bg-border" />}
@@ -84,7 +91,9 @@ function TimelineItem({ event, isLast, network }: TimelineItemProps) {
           <div>
             <p className="text-sm font-medium">{event.description}</p>
             {event.amount && (
-              <p className="text-xs text-muted-foreground">Amount: {event.amount}</p>
+              <p className="text-xs text-muted-foreground">
+                {streamTimelineCopy.amount(event.amount)}
+              </p>
             )}
             {event.from && event.to && (
               <p className="text-xs text-muted-foreground font-mono">
@@ -131,14 +140,14 @@ export function StreamTimeline({ streamId }: StreamTimelineProps) {
         <div className="flex items-center gap-2">
           <Clock className="size-4 text-muted-foreground" />
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            Transaction history
+            {streamTimelineCopy.title}
           </h2>
         </div>
         <button
           type="button"
           onClick={refetch}
           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-          aria-label="Refresh timeline"
+          aria-label={streamTimelineCopy.refreshAriaLabel}
         >
           <RefreshCcw className="size-3.5" />
         </button>
@@ -147,16 +156,14 @@ export function StreamTimeline({ streamId }: StreamTimelineProps) {
       {loading ? (
         <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
           <RefreshCcw className="size-4 animate-spin" />
-          Loading history…
+          {streamTimelineCopy.loading}
         </div>
       ) : events.length === 0 ? (
         <div className="py-6 text-center">
           <Clock className="mx-auto size-8 text-muted-foreground/40" />
-          <p className="mt-2 text-sm text-muted-foreground">
-            No transaction history found for this stream.
-          </p>
+          <p className="mt-2 text-sm text-muted-foreground">{streamTimelineCopy.emptyTitle}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            History is populated from on-chain events after the stream is active.
+            {streamTimelineCopy.emptyDescription}
           </p>
         </div>
       ) : (
@@ -181,12 +188,12 @@ export function StreamTimeline({ streamId }: StreamTimelineProps) {
               {collapsed ? (
                 <>
                   <ChevronDown className="size-3.5" />
-                  Show {events.length - 3} more events
+                  {streamTimelineCopy.showMore(events.length - 3)}
                 </>
               ) : (
                 <>
                   <ChevronUp className="size-3.5" />
-                  Collapse
+                  {streamTimelineCopy.collapse}
                 </>
               )}
             </button>
