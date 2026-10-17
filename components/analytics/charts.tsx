@@ -17,7 +17,10 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { formatTokenAmount, shortenAddress } from '@/lib/stream-utils'
+import { analyticsCopy } from '@/lib/copy/analytics'
 import type { StreamStatus } from '@/types/stream'
+
+const copy = analyticsCopy.charts
 
 interface SeriesPoint {
   label: string
@@ -52,12 +55,7 @@ const CHART_COLORS = [
   'var(--color-chart-5)',
 ]
 
-const STATUS_LABEL: Record<StreamStatus, string> = {
-  streaming: 'Streaming',
-  scheduled: 'Scheduled',
-  completed: 'Completed',
-  cancelled: 'Cancelled',
-}
+const STATUS_LABEL: Record<StreamStatus, string> = copy.statusLabels
 
 const STATUS_COLOR: Record<StreamStatus, string> = {
   streaming: 'var(--color-chart-1)',
@@ -127,14 +125,12 @@ export function AnalyticsCharts({
       {/* Streaming volume over time — interactive area chart */}
       <Card>
         <CardHeader>
-          <CardTitle>Streaming volume over time</CardTitle>
-          <CardDescription>
-            Total tokens deposited into streams created per day, for the selected window.
-          </CardDescription>
+          <CardTitle>{copy.volume.title}</CardTitle>
+          <CardDescription>{copy.volume.description}</CardDescription>
         </CardHeader>
         <CardContent>
           {series.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No stream activity yet for this period.</p>
+            <p className="text-sm text-muted-foreground">{copy.volume.empty}</p>
           ) : (
             <ResponsiveContainer width="100%" height={260}>
               <AreaChart data={series} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -163,7 +159,7 @@ export function AnalyticsCharts({
                     <ChartTooltip
                       formatter={(name, value) =>
                         name === 'volume'
-                          ? `Volume: ${Number(value).toLocaleString('en-US', { maximumFractionDigits: 2 })}`
+                          ? copy.volume.tooltip(Number(value).toLocaleString('en-US', { maximumFractionDigits: 2 }))
                           : `${name}: ${value}`
                       }
                     />
@@ -187,12 +183,12 @@ export function AnalyticsCharts({
         {/* Token distribution — donut chart */}
         <Card>
           <CardHeader>
-            <CardTitle>Token distribution</CardTitle>
-            <CardDescription>Streams grouped by token across the current dataset.</CardDescription>
+            <CardTitle>{copy.tokenDistribution.title}</CardTitle>
+            <CardDescription>{copy.tokenDistribution.description}</CardDescription>
           </CardHeader>
           <CardContent>
             {tokenShares.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No token distribution data available yet.</p>
+              <p className="text-sm text-muted-foreground">{copy.tokenDistribution.empty}</p>
             ) : (
               <div className="flex flex-col items-center gap-4 sm:flex-row">
                 <ResponsiveContainer width="100%" height={200} className="max-w-[200px]">
@@ -249,12 +245,12 @@ export function AnalyticsCharts({
         {/* Stream status breakdown — bar chart */}
         <Card>
           <CardHeader>
-            <CardTitle>Stream status breakdown</CardTitle>
-            <CardDescription>Active, scheduled, completed, and cancelled streams.</CardDescription>
+            <CardTitle>{copy.statusBreakdown.title}</CardTitle>
+            <CardDescription>{copy.statusBreakdown.description}</CardDescription>
           </CardHeader>
           <CardContent>
             {!hasStatusData ? (
-              <p className="text-sm text-muted-foreground">No streams to break down yet.</p>
+              <p className="text-sm text-muted-foreground">{copy.statusBreakdown.empty}</p>
             ) : (
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart
@@ -276,7 +272,7 @@ export function AnalyticsCharts({
                     width={32}
                   />
                   <Tooltip content={<ChartTooltip formatter={(name, value) => `${name}: ${value}`} />} />
-                  <Bar dataKey="count" name="Streams" radius={[6, 6, 0, 0]}>
+                  <Bar dataKey="count" name={copy.statusBreakdown.seriesName} radius={[6, 6, 0, 0]}>
                     {statusBreakdown.map((entry) => (
                       <Cell key={entry.status} fill={STATUS_COLOR[entry.status]} />
                     ))}
@@ -292,12 +288,12 @@ export function AnalyticsCharts({
         {/* Top recipients */}
         <Card>
           <CardHeader>
-            <CardTitle>Top recipients</CardTitle>
-            <CardDescription>Addresses receiving the most streams in this window.</CardDescription>
+            <CardTitle>{copy.topRecipients.title}</CardTitle>
+            <CardDescription>{copy.topRecipients.description}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             {topRecipients.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No recipients yet.</p>
+              <p className="text-sm text-muted-foreground">{copy.topRecipients.empty}</p>
             ) : (
               topRecipients.map((recipient) => (
                 <div
@@ -312,7 +308,7 @@ export function AnalyticsCharts({
                       {recipient.federationName ?? shortenAddress(recipient.address, 5)}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {recipient.count} stream{recipient.count === 1 ? '' : 's'}
+                      {copy.topRecipients.streamCount(recipient.count)}
                     </p>
                   </div>
                   <div className="flex shrink-0 flex-wrap justify-end gap-1">
@@ -331,12 +327,12 @@ export function AnalyticsCharts({
         {/* Top tokens by volume (kept from the original list view) */}
         <Card>
           <CardHeader>
-            <CardTitle>Top tokens by volume</CardTitle>
-            <CardDescription>Most-used tokens across created streams.</CardDescription>
+            <CardTitle>{copy.topTokens.title}</CardTitle>
+            <CardDescription>{copy.topTokens.description}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {topTokens.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No volume data yet.</p>
+              <p className="text-sm text-muted-foreground">{copy.topTokens.empty}</p>
             ) : (
               topTokens.map((token) => (
                 <div
@@ -345,7 +341,7 @@ export function AnalyticsCharts({
                 >
                   <div>
                     <p className="font-medium">{token.symbol}</p>
-                    <p className="text-xs text-muted-foreground">{token.count} streams</p>
+                    <p className="text-xs text-muted-foreground">{copy.topTokens.streamCount(token.count)}</p>
                   </div>
                   <Badge variant="secondary">
                     {formatTokenAmount(token.amount, token.decimals)} {token.symbol}
@@ -360,16 +356,16 @@ export function AnalyticsCharts({
       {/* Unlock progress — aggregate progress bar */}
       <Card>
         <CardHeader>
-          <CardTitle>Unlock progress</CardTitle>
-          <CardDescription>Total unlocked vs. locked across all streams in this window.</CardDescription>
+          <CardTitle>{copy.unlockProgress.title}</CardTitle>
+          <CardDescription>{copy.unlockProgress.description}</CardDescription>
         </CardHeader>
         <CardContent>
           {unlockProgress.deposited === 0n ? (
-            <p className="text-sm text-muted-foreground">No deposits to track yet.</p>
+            <p className="text-sm text-muted-foreground">{copy.unlockProgress.empty}</p>
           ) : (
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Unlocked</span>
+                <span className="text-muted-foreground">{copy.unlockProgress.unlocked}</span>
                 <span className="font-medium">{unlockPct.toFixed(1)}%</span>
               </div>
               <div className="h-3 w-full overflow-hidden rounded-full bg-muted">

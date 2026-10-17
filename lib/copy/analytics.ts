@@ -41,4 +41,49 @@ export const analyticsCopy = {
     networkContextNotice:
       "This dashboard is built from the current app data and will be backed by on-chain aggregation once a public index is available.",
   },
+
+  // Copy for AnalyticsCharts (components/analytics/charts.tsx).
+  charts: {
+    statusLabels: {
+      streaming: "Streaming",
+      scheduled: "Scheduled",
+      completed: "Completed",
+      cancelled: "Cancelled",
+    },
+    volume: {
+      title: "Streaming volume over time",
+      description: "Total tokens deposited into streams created per day, for the selected window.",
+      empty: "No stream activity yet for this period.",
+      tooltip: (value: string) => `Volume: ${value}`,
+    },
+    tokenDistribution: {
+      title: "Token distribution",
+      description: "Streams grouped by token across the current dataset.",
+      empty: "No token distribution data available yet.",
+    },
+    statusBreakdown: {
+      title: "Stream status breakdown",
+      description: "Active, scheduled, completed, and cancelled streams.",
+      empty: "No streams to break down yet.",
+      seriesName: "Streams",
+    },
+    topRecipients: {
+      title: "Top recipients",
+      description: "Addresses receiving the most streams in this window.",
+      empty: "No recipients yet.",
+      streamCount: (count: number) => `${count} stream${count === 1 ? "" : "s"}`,
+    },
+    topTokens: {
+      title: "Top tokens by volume",
+      description: "Most-used tokens across created streams.",
+      empty: "No volume data yet.",
+      streamCount: (count: number) => `${count} streams`,
+    },
+    unlockProgress: {
+      title: "Unlock progress",
+      description: "Total unlocked vs. locked across all streams in this window.",
+      empty: "No deposits to track yet.",
+      unlocked: "Unlocked",
+    },
+  },
 };

@@ -588,6 +588,16 @@ fn test_get_received_stream_count_accurate() {
     assert_eq!(count, 5);
 }
 
+#[test]
+fn test_stream_counts_zero_for_unknown_address() {
+    let t = TestEnv::setup();
+    let client = t.client();
+    let stranger = Address::generate(&t.env);
+
+    assert_eq!(client.get_sent_stream_count(&stranger), 0);
+    assert_eq!(client.get_received_stream_count(&stranger), 0);
+}
+
 // ─── #217: partial_cancel ────────────────────────────────────────────────────
 
 #[test]
