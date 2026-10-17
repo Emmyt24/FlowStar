@@ -18,6 +18,7 @@ export const streamDetailCopy = {
     exceedsBalance: 'Amount exceeds withdrawable balance',
     estimatedFeeLabel: 'Estimated network fee:',
     feeShownAgainNote: 'Fee will be shown again before wallet confirmation.',
+    feeConfirmAction: 'withdrawal',
     cancelButton: 'Cancel',
     withdrawing: 'Withdrawing…',
     reviewFeesButton: 'Review fees',
@@ -34,6 +35,18 @@ export const streamDetailCopy = {
     estimatedFeeLabel: 'Estimated network fee:',
     keepStreamButton: 'Keep stream',
     reviewAndCancelButton: 'Review & cancel',
+    feeConfirmAction: 'stream cancellation',
+    keepStreamButton: 'Keep stream',
+    reviewAndCancelButton: 'Review & cancel',
+  },
+
+  cleanupDialog: {
+    title: 'Remove from history',
+    description:
+      "This permanently deletes this stream's on-chain record. This can't be undone, and it won't affect any funds already transferred.",
+    cancelButton: 'Cancel',
+    removing: 'Removing…',
+    confirmButton: 'Remove permanently',
   },
 
   autoWithdraw: {
@@ -129,6 +142,8 @@ export const streamDetailCopy = {
     withdrawButton: 'Withdraw',
     cancelStreamButton: 'Cancel stream',
     duplicateStreamButton: 'Duplicate stream',
+    removeFromHistoryButton: 'Remove from history',
+    unlockProgressLabel: 'Stream unlock progress',
   },
 
   details: {
@@ -146,6 +161,20 @@ export const streamDetailCopy = {
     end: 'End',
     network: 'Network',
   },
+  },
+
+  // StreamTimeline strings — issue #952
+  timeline: {
+    sectionTitle: "Transaction history",
+    refreshAriaLabel: "Refresh timeline",
+    loading: "Loading history…",
+    emptyTitle: "No transaction history found for this stream.",
+    emptyBody: "History is populated from on-chain events after the stream is active.",
+    amountLabel: (amount: string) => `Amount: ${amount}`,
+    showMoreButton: (count: number) => `Show ${count} more events`,
+    collapseButton: "Collapse",
+  },
+};
 }
 
 // QrShareDialog strings — issue #954
