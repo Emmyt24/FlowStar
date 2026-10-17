@@ -22,6 +22,7 @@ import { useWallet } from '@/hooks/use-wallet'
 import { WALLET_OPTIONS, ADAPTERS } from '@/components/providers/wallet-provider'
 import { shortenAddress } from '@/lib/stream-utils'
 import { cn } from '@/lib/utils'
+import { walletCopy as copy } from '@/lib/copy/wallet'
 import { toast } from 'sonner'
 
 export function ConnectWalletButton({ className }: { className?: string }) {
@@ -47,12 +48,12 @@ export function ConnectWalletButton({ className }: { className?: string }) {
       await navigator.clipboard.writeText(address)
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
-      toast.success('Address copied', {
-        description: 'Wallet address copied to clipboard',
+      toast.success(copy.toasts.addressCopied, {
+        description: copy.toasts.addressCopiedDescription,
       })
     } catch {
-      toast.error('Failed to copy', {
-        description: 'Could not copy address to clipboard',
+      toast.error(copy.toasts.copyFailed, {
+        description: copy.toasts.copyFailedDescription,
       })
     }
   }
@@ -70,7 +71,7 @@ export function ConnectWalletButton({ className }: { className?: string }) {
         <DropdownMenuContent align="end" className="w-56">
           <div className="px-2 py-1.5">
             <p className="text-xs text-muted-foreground">
-              Connected with {activeWallet?.name ?? 'wallet'}
+              {copy.connectedWith(activeWallet?.name ?? copy.fallbackWalletName)}
             </p>
             <p className="truncate font-mono text-sm">{shortenAddress(address, 8)}</p>
           </div>
@@ -81,11 +82,11 @@ export function ConnectWalletButton({ className }: { className?: string }) {
             ) : (
               <Copy className="size-4" />
             )}
-            {copied ? 'Copied' : 'Copy address'}
+            {copied ? copy.copied : copy.copyAddress}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={disconnect} variant="destructive">
             <LogOut className="size-4" />
-            Disconnect
+            {copy.disconnect}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -97,20 +98,17 @@ export function ConnectWalletButton({ className }: { className?: string }) {
       <DialogTrigger asChild>
         <Button className={cn('gap-2', className)}>
           <Wallet className="size-4" />
-          Connect wallet
+          {copy.connectWallet}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Connect a wallet</DialogTitle>
-          <DialogDescription>
-            Choose a Stellar wallet to continue. You&apos;ll sign transactions
-            from your wallet — FlowStar never holds your keys.
-          </DialogDescription>
+          <DialogTitle>{copy.dialog.title}</DialogTitle>
+          <DialogDescription>{copy.dialog.description}</DialogDescription>
         </DialogHeader>
         <div className="grid gap-2 pt-2">
           <div className="sr-only" aria-live="polite" aria-atomic="true">
-            {connecting && `Connecting to ${WALLET_OPTIONS.find((w) => w.id === pendingId)?.name || 'wallet'}…`}
+            {connecting && copy.connectingTo(WALLET_OPTIONS.find((w) => w.id === pendingId)?.name || copy.fallbackWalletName)}
           </div>
           {WALLET_OPTIONS.map((wallet) => {
             const isPending = connecting && pendingId === wallet.id
@@ -144,12 +142,12 @@ export function ConnectWalletButton({ className }: { className?: string }) {
                       onClick={(e) => e.stopPropagation()}
                       className="flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground hover:text-foreground"
                     >
-                      Not installed
+                      {copy.notInstalled}
                       <ExternalLink className="size-3" />
                     </a>
                   ) : (
                     <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                      Not installed
+                      {copy.notInstalled}
                     </span>
                   )
                 )}

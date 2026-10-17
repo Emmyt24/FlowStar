@@ -5,6 +5,7 @@ import { Bell, X } from 'lucide-react'
 import { formatTimeAgo } from '@/lib/stream-utils'
 import { useWallet } from '@/hooks/use-wallet'
 import { useNotifications, type AppNotification } from '@/hooks/use-notifications'
+import { notificationsCopy } from '@/lib/copy/notifications'
 
 function NotificationItem({
   notification,
@@ -31,7 +32,7 @@ function NotificationItem({
           {!notification.read && <span className="size-2 rounded-full bg-primary" />}
           <button
             onClick={() => onDismiss(notification.id)}
-            aria-label="Dismiss notification"
+            aria-label={notificationsCopy.dismissAria}
             className="text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded"
           >
             <X className="size-3.5" />
@@ -125,13 +126,13 @@ export function NotificationBell() {
         aria-expanded={open}
         aria-haspopup="true"
         className="relative rounded-md p-2 text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
+        aria-label={notificationsCopy.triggerAriaLabel(unreadCount)}
         data-testid="notification-bell-trigger"
       >
         <Bell className="size-5" />
         {unreadCount > 0 && (
           <span className="absolute -right-0.5 -top-0.5 flex size-4.5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-            {unreadCount > 9 ? '9+' : unreadCount}
+            {unreadCount > 9 ? notificationsCopy.badgeOverflow : unreadCount}
           </span>
         )}
       </button>
@@ -140,25 +141,25 @@ export function NotificationBell() {
         <div
           ref={panelRef}
           role="menu"
-          aria-label="Notifications"
+          aria-label={notificationsCopy.panelAria}
           tabIndex={-1}
           className="absolute right-0 top-full z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] rounded-xl border border-border bg-card shadow-lg focus:outline-none"
         >
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
-            <h3 className="text-sm font-medium">Notifications</h3>
+            <h3 className="text-sm font-medium">{notificationsCopy.heading}</h3>
             {notifications.length > 0 && (
               <button
                 onClick={clearAll}
                 className="text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded"
               >
-                Clear all
+                {notificationsCopy.clearAll}
               </button>
             )}
           </div>
           <div className="max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
               <p className="px-4 py-8 text-center text-sm text-muted-foreground">
-                No notifications yet
+                {notificationsCopy.empty}
               </p>
             ) : (
               notifications.map((n, idx) => (
