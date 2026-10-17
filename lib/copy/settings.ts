@@ -1,4 +1,5 @@
-// Centralized UI copy for the settings page (app/app/settings/page.tsx) and webhook settings (components/webhooks/webhook-settings.tsx).
+// Centralized UI copy for the settings page (app/app/settings/page.tsx), webhook settings (components/webhooks/webhook-settings.tsx),
+// and address book settings (components/settings/address-book-settings.tsx).
 // Extracted so this page's strings live in one place instead of scattered through JSX (issue #793).
 
 export const settingsCopy = {
@@ -34,6 +35,22 @@ export const settingsCopy = {
     },
   },
 
+  addressBook: {
+    emptyState:
+      'No saved addresses yet. Addresses you save while creating a stream will appear here.',
+    saveAria: 'Save',
+    cancelAria: 'Cancel',
+    editAria: 'Edit label',
+    deleteAria: 'Delete',
+    confirmRemoveLabel: 'Remove?',
+    confirmButton: 'Confirm',
+    cancelButton: 'Cancel',
+    validation: {
+      emptyLabel: 'Label cannot be empty',
+    },
+    toasts: {
+      entryUpdated: 'Entry updated',
+      entryRemoved: 'Entry removed',
   clearLocalData: {
     title: 'Clear local data',
     description:

@@ -11,6 +11,7 @@ import {
   deleteAddressBookEntry,
   type AddressBookEntry,
 } from '@/lib/address-book'
+import { settingsCopy } from '@/lib/copy/settings'
 
 export function AddressBookSettings() {
   const [entries, setEntries] = useState<AddressBookEntry[]>([])
@@ -30,28 +31,24 @@ export function AddressBookSettings() {
   function saveEdit(id: string) {
     const label = editLabel.trim()
     if (!label) {
-      toast.error('Label cannot be empty')
+      toast.error(settingsCopy.addressBook.validation.emptyLabel)
       return
     }
     updateAddressBookEntry(id, { label })
     setEntries(getAddressBookEntries())
     setEditingId(null)
-    toast.success('Entry updated')
+    toast.success(settingsCopy.addressBook.toasts.entryUpdated)
   }
 
   function handleDelete(id: string) {
     deleteAddressBookEntry(id)
     setEntries(getAddressBookEntries())
     setConfirmingDeleteId(null)
-    toast.success('Entry removed')
+    toast.success(settingsCopy.addressBook.toasts.entryRemoved)
   }
 
   if (entries.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        No saved addresses yet. Addresses you save while creating a stream will appear here.
-      </p>
-    )
+    return <p className="text-sm text-muted-foreground">{settingsCopy.addressBook.emptyState}</p>
   }
 
   return (
@@ -87,7 +84,7 @@ export function AddressBookSettings() {
                   variant="ghost"
                   size="icon"
                   className="size-8"
-                  aria-label="Save"
+                  aria-label={settingsCopy.addressBook.saveAria}
                   onClick={() => saveEdit(entry.id)}
                 >
                   <Check className="size-4" />
@@ -96,7 +93,7 @@ export function AddressBookSettings() {
                   variant="ghost"
                   size="icon"
                   className="size-8"
-                  aria-label="Cancel"
+                  aria-label={settingsCopy.addressBook.cancelAria}
                   onClick={() => setEditingId(null)}
                 >
                   <X className="size-4" />
@@ -104,14 +101,16 @@ export function AddressBookSettings() {
               </>
             ) : confirmingDeleteId === entry.id ? (
               <>
-                <span className="text-xs text-muted-foreground mr-1">Remove?</span>
+                <span className="text-xs text-muted-foreground mr-1">
+                  {settingsCopy.addressBook.confirmRemoveLabel}
+                </span>
                 <Button
                   variant="destructive"
                   size="sm"
                   className="h-8"
                   onClick={() => handleDelete(entry.id)}
                 >
-                  Confirm
+                  {settingsCopy.addressBook.confirmButton}
                 </Button>
                 <Button
                   variant="ghost"
@@ -119,7 +118,7 @@ export function AddressBookSettings() {
                   className="h-8"
                   onClick={() => setConfirmingDeleteId(null)}
                 >
-                  Cancel
+                  {settingsCopy.addressBook.cancelButton}
                 </Button>
               </>
             ) : (
@@ -128,7 +127,7 @@ export function AddressBookSettings() {
                   variant="ghost"
                   size="icon"
                   className="size-8"
-                  aria-label="Edit label"
+                  aria-label={settingsCopy.addressBook.editAria}
                   onClick={() => startEdit(entry)}
                 >
                   <Pencil className="size-4" />
@@ -137,7 +136,7 @@ export function AddressBookSettings() {
                   variant="ghost"
                   size="icon"
                   className="size-8 text-destructive hover:text-destructive"
-                  aria-label="Delete"
+                  aria-label={settingsCopy.addressBook.deleteAria}
                   onClick={() => setConfirmingDeleteId(entry.id)}
                 >
                   <Trash2 className="size-4" />

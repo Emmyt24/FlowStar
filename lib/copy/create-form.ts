@@ -1,4 +1,5 @@
-// Centralized UI copy for the create-stream form (app/app/create/create-form.tsx).
+// Centralized UI copy for the create-stream form (app/app/create/create-form.tsx)
+// and stream preview (components/streams/stream-preview.tsx).
 // First step toward i18n-readiness — extracted so this component's strings
 // live in one place instead of scattered through JSX (issue #682).
 
@@ -85,6 +86,34 @@ export const createFormCopy = {
     quickCliffLabel: 'Quick cliff',
     cliffDateLabel: 'Cliff date',
     cliffAmountLabel: (symbol: string) => `Cliff amount (${symbol})`,
+    optionalTag: 'optional',
+  },
+
+  streamPreview: {
+    emptyState: 'Fill in the form to see a preview of your stream.',
+    title: 'Stream preview',
+    lowRateWarning: (perHour: string, symbol: string) =>
+      `Unlock rate is very low (${perHour} ${symbol}/hour). Consider increasing the amount or reducing the duration.`,
+    totalDurationLabel: 'Total duration',
+    unlockRateLabel: 'Unlock rate',
+    perMonthSuffix: '/mo',
+    perHourSuffix: '/hr',
+    perDaySuffix: '/day',
+    cliffAmountLabel: 'Cliff amount',
+    cliffWaitLabel: 'Cliff wait',
+    timelineLabel: 'Timeline',
+    startLabel: 'Start',
+    cliffLabel: (duration: string) => `Cliff (${duration})`,
+    endLabel: (duration: string) => `End (${duration})`,
+    duration: {
+      none: '—',
+      days: (n: number) => `${n} day${n !== 1 ? 's' : ''}`,
+      hours: (n: number) => `${n} hour${n !== 1 ? 's' : ''}`,
+      minutes: (n: number) => `${n} min`,
+      belowOneMinute: '< 1 min',
+    },
+  },
+
     cliffAmountPlaceholder: '0',
     optionalTag: 'optional',
   },
