@@ -33,6 +33,8 @@ export const streamDetailCopy = {
     description:
       "Unlocked funds will be sent to the recipient. Any remaining locked tokens will be returned to your wallet. You'll have a few seconds to undo before this is submitted.",
     estimatedFeeLabel: 'Estimated network fee:',
+    keepStreamButton: 'Keep stream',
+    reviewAndCancelButton: 'Review & cancel',
     feeConfirmAction: 'stream cancellation',
     keepStreamButton: 'Keep stream',
     reviewAndCancelButton: 'Review & cancel',
@@ -159,6 +161,7 @@ export const streamDetailCopy = {
     end: 'End',
     network: 'Network',
   },
+  },
 
   // StreamTimeline strings — issue #952
   timeline: {
@@ -200,4 +203,16 @@ export const downloadReceiptButtonCopy = {
   htmlSuccessDescription:
     'A new window with your receipt has been opened. You can print it from there.',
   csvFileName: (id: string) => `flowstar-receipt-${id}.csv`,
+}
+
+// StreamTimeline strings — issue #952
+export const streamTimelineCopy = {
+  title: 'Transaction history',
+  refreshAriaLabel: 'Refresh timeline',
+  loading: 'Loading history…',
+  emptyTitle: 'No transaction history found for this stream.',
+  emptyDescription: 'History is populated from on-chain events after the stream is active.',
+  amount: (amount: string) => `Amount: ${amount}`,
+  showMore: (count: number) => `Show ${count} more events`,
+  collapse: 'Collapse',
 }

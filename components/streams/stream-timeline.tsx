@@ -12,10 +12,15 @@ import {
   ChevronUp,
   Clock,
 } from 'lucide-react'
-import { useStreamHistory, type TimelineEvent, type TimelineEventType } from '@/hooks/use-stream-history'
+import {
+  useStreamHistory,
+  type TimelineEvent,
+  type TimelineEventType,
+} from '@/hooks/use-stream-history'
 import { explorerUrl, type NetworkName } from '@/lib/stellar'
 import { streamDetailCopy } from '@/lib/copy/stream-detail'
 import { useNetwork } from '@/components/providers/network-provider'
+import { streamTimelineCopy } from '@/lib/copy/stream-detail'
 
 const copy = streamDetailCopy.timeline
 
@@ -75,7 +80,9 @@ function TimelineItem({ event, isLast, network }: TimelineItemProps) {
     <div className="flex gap-3">
       {/* Icon + line */}
       <div className="flex flex-col items-center">
-        <div className={`flex size-8 shrink-0 items-center justify-center rounded-full border ${eventColor(event.type)}`}>
+        <div
+          className={`flex size-8 shrink-0 items-center justify-center rounded-full border ${eventColor(event.type)}`}
+        >
           {eventIcon(event.type)}
         </div>
         {!isLast && <div className="mt-1 w-px flex-1 bg-border" />}
@@ -87,6 +94,9 @@ function TimelineItem({ event, isLast, network }: TimelineItemProps) {
           <div>
             <p className="text-sm font-medium">{event.description}</p>
             {event.amount && (
+              <p className="text-xs text-muted-foreground">
+                {streamTimelineCopy.amount(event.amount)}
+              </p>
               <p className="text-xs text-muted-foreground">{copy.amountLabel(event.amount)}</p>
             )}
             {event.from && event.to && (
@@ -134,6 +144,7 @@ export function StreamTimeline({ streamId }: StreamTimelineProps) {
         <div className="flex items-center gap-2">
           <Clock className="size-4 text-muted-foreground" />
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            {streamTimelineCopy.title}
             {copy.sectionTitle}
           </h2>
         </div>
@@ -141,6 +152,7 @@ export function StreamTimeline({ streamId }: StreamTimelineProps) {
           type="button"
           onClick={refetch}
           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+          aria-label={streamTimelineCopy.refreshAriaLabel}
           aria-label={copy.refreshAriaLabel}
         >
           <RefreshCcw className="size-3.5" />
@@ -150,11 +162,15 @@ export function StreamTimeline({ streamId }: StreamTimelineProps) {
       {loading ? (
         <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
           <RefreshCcw className="size-4 animate-spin" />
+          {streamTimelineCopy.loading}
           {copy.loading}
         </div>
       ) : events.length === 0 ? (
         <div className="py-6 text-center">
           <Clock className="mx-auto size-8 text-muted-foreground/40" />
+          <p className="mt-2 text-sm text-muted-foreground">{streamTimelineCopy.emptyTitle}</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {streamTimelineCopy.emptyDescription}
           <p className="mt-2 text-sm text-muted-foreground">
             {copy.emptyTitle}
           </p>
@@ -184,11 +200,13 @@ export function StreamTimeline({ streamId }: StreamTimelineProps) {
               {collapsed ? (
                 <>
                   <ChevronDown className="size-3.5" />
+                  {streamTimelineCopy.showMore(events.length - 3)}
                   {copy.showMoreButton(events.length - 3)}
                 </>
               ) : (
                 <>
                   <ChevronUp className="size-3.5" />
+                  {streamTimelineCopy.collapse}
                   {copy.collapseButton}
                 </>
               )}
